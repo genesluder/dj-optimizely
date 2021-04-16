@@ -55,7 +55,7 @@ if get_feature_enabled(request, 'cool_stuff'):
 ### With a template tag
 
 ```
-{% load optimizely_tags %}
+{% load djoptimizely_tags %}
 ...
 {% show_feature 'cool_stuff' as show_cool_stuff %}
 {% if show_cool_stuff %}
