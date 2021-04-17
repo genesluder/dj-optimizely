@@ -2,12 +2,14 @@
 
 ## Introduction
 
-Store optimizely datafile in a Django model
+Database-backed storage for your Optimizaly datafile and utilities for using Rollouts in Django. 
 
-### WORK IN PROGRESS
-
-This app is in the very early stages and I'll be fleshing it out over the coming weeks. 
-Though it is currently in use. 
+Features:
+* Database-backed storage for Optimizaly datafile
+* Webhook endpoint to recieve datafile updates
+  * The webhook payload contains the datafile for the primary environment. If the current environment is not the primary environment, the webhook call will trigger a fetch of your current environment's datafile. Only your current environment's datafile is stored locally at this time.
+  * On server start the datafile will be initialized via a pull based on the provided datafile url
+* Currently only supports Rollouts. Check if a featuee flag is enabled. 
 
 ## Quickstart
 

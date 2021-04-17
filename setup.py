@@ -6,7 +6,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setuptools.setup(
     name='dj-optimizely',
-    version='0.0.4',
+    version='0.0.5',
     author='Gene Sluder',
     author_email='gene@gobiko.com',
     description='Store Optimizely datafile in a Django model',
