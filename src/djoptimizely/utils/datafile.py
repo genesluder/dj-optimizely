@@ -3,6 +3,10 @@ import json, requests
 from django.conf import settings
 
 from djoptimizely.models import OptimizelyDataFile
+from djoptimizely.settings import (
+    OPTIMIZELY_ENVIRONMENT,
+    OPTIMIZELY_DATAFILE_URL
+)
 
 
 def _get_datafile_object(optimizely_env):
@@ -12,7 +16,7 @@ def _get_datafile_object(optimizely_env):
     return o
 
 def _get_datafile_object_for_current_env():
-    return _get_datafile_object(settings.OPTIMIZELY_ENVIRONMENT)
+    return _get_datafile_object(OPTIMIZELY_ENVIRONMENT)
 
 def _update_datafile_object(o, url):
     response = requests.get(url)
@@ -36,15 +40,15 @@ def get_datafile():
     return None
 
 def update_datafile_for_current_env():
-    if settings.OPTIMIZELY_DATAFILE_URL:
+    if OPTIMIZELY_DATAFILE_URL:
         o = _get_datafile_object_for_current_env()
-        _update_datafile_object(o, settings.OPTIMIZELY_DATAFILE_URL)
+        _update_datafile_object(o, OPTIMIZELY_DATAFILE_URL)
 
 def update_datafile_with_payload(payload):
     data = payload.get('data')
     if data:
         env = data.get('environment')
-        if env == settings.OPTIMIZELY_ENVIRONMENT:
+        if env == OPTIMIZELY_ENVIRONMENT:
             _update_datafile_for_primary_env(env, data)
         else:
             update_datafile_for_current_env()

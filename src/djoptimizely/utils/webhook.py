@@ -4,9 +4,11 @@ from hashlib import sha1
 
 from django.conf import settings
 
+from djoptimizely.settings import OPTIMIZELY_WEBHOOK_SECRET
+
 
 def verify_signature(request):
-    secret = settings.OPTIMIZELY_WEBHOOK_SECRET
+    secret = OPTIMIZELY_WEBHOOK_SECRET
     request_signature = request.META.get('HTTP_X_HUB_SIGNATURE')
     computed_signature = 'sha1=' + hmac.new(
         codecs.encode(secret),
