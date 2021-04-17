@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class DjOptimizelyConfig(AppConfig):
+class DjoptimizelyConfig(AppConfig):
     name = 'djoptimizely'

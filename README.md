@@ -1,17 +1,23 @@
 # dj-optimizely
 
+## Introduction
+
 Store optimizely datafile in a Django model
 
-## WORK IN PROGRESS
+### WORK IN PROGRESS
 
 This app is in the very early stages and I'll be fleshing it out over the coming weeks. 
 Though it is currently in use. 
 
+## Quickstart
 
-## Usage
------------------
+Install:
 
-### Settings
+```
+pip install dj-optimizely
+```
+
+Add `djoptimizely` to `INSTALLED_APPS`:
 
 ```
 INSTALLED_APPS = [
@@ -19,51 +25,84 @@ INSTALLED_APPS = [
     'djoptimizely',
     ...
 ]
+```
 
+Add `djoptimizely.middleware.optimizely_middleware` to `MIDDLEWARE`:
+
+```
 MIDDLEWARE = [
     ...
     'djoptimizely.middleware.optimizely_middleware',
     ...
 ]
+```
 
+Specify additional required settings:
+
+```
 OPTIMIZELY_ENVIRONMENT = 'staging'
 OPTIMIZELY_WEBHOOK_SECRET = os.getenv('OPTIMIZELY_WEBHOOK_SECRET')
 OPTIMIZELY_DATAFILE_URL = os.getenv('OPTIMIZELY_DATAFILE_URL')
-OPTIMIZELY_USER_ID = 'myapp.module.get_user_id' # Specify a function to get user id (required)
-OPTIMIZELY_USER_ATTRIBS = 'myapp.module.get_user_attribs' # Specify a function to get user attribs (optional)
 ```
 
-### Urls
+Specify optional callbacks. Both functions take the `request` as the first parameter:
 
 ```
-urlpatterns = [
-    ...
-    path('webhooks/', include('djoptimizely.urls')),
-    ...
-]
+OPTIMIZELY_USER_ID_CALLBACK = 'myapp.module.get_user_id'
+OPTIMIZELY_USER_ATTRIBS_CALLBACK = 'myapp.module.get_user_attribs'
+```
+
+Default callbacks:
+
+```
+def get_user_id_default(request):
+    if request.user.is_authenticated:
+        return request.user.pk
+    else:
+        return request.session._get_or_create_session_key()
+
+def get_user_attribs_default(request):
+    attribs = {
+        'is_authenticated': False,
+        'is_staff': False
+    }
+    if request.user.is_authenticated:
+        attribs['is_authenticated'] = True
+        if request.user.is_staff:
+            attribs['is_staff'] = True
+        
+    return attribs
+```
+
+Add the webhook to urls.py:
+
+```
+path('webhooks/', include('djoptimizely.urls')),
 ```
 
 ### Check if a feature should be enabled:
 
 ```
 from djoptimizely.services import get_feature_enabled
-...
+
 if get_feature_enabled(request, 'cool_stuff'):
     print('Cool!')
 ```
 
-### With a template tag
+### Check in a template
 
 ```
 {% load djoptimizely_tags %}
-...
+
 {% show_feature 'cool_stuff' as show_cool_stuff %}
 {% if show_cool_stuff %}
     <p>COOL Stuff!</p>
 {% endif %}
 ```
 
-### View mixin: (serve if enabled else 404)
+### Generic view mixin:
+
+If the specified `feature_key` is `not enabled` for `request.user` return a 404
 
 ```
 from djoptimizely.mixins import OptimizelyFeatureViewMixin
