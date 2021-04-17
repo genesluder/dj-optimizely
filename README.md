@@ -96,7 +96,7 @@ if get_feature_enabled(request, 'cool_stuff'):
 ```
 {% load djoptimizely_tags %}
 
-{% show_feature 'cool_stuff' as show_cool_stuff %}
+{% feature_enabled 'cool_stuff' as show_cool_stuff %}
 {% if show_cool_stuff %}
     <p>COOL Stuff!</p>
 {% endif %}
