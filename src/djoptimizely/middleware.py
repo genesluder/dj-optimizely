@@ -6,7 +6,10 @@ from djoptimizely.utils.datafile import update_datafile_for_current_env
 
 def optimizely_middleware(get_response):
     # On server start fetch the current datafile as specified in settings
-    update_datafile_for_current_env()
+    try:
+        update_datafile_for_current_env()
+    except:
+        pass
 
     def middleware(request):
         request.optimizely_client = OptimizelyClient()
